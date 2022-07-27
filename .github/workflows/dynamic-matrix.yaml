@@ -3,7 +3,7 @@ name: Generate Dynamic Matrix
 on:
   push:
     branches:
-      - main
+      - doesnt_exist
 
 
 jobs:
