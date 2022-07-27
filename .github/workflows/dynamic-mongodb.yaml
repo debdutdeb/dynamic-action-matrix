@@ -12,8 +12,8 @@ jobs:
     steps:
       - name: Setup jq
         run: |
-          apt update && \
-            apt install jq curl -y
+          sudo apt update && \
+            sudo apt install jq curl -y
 
       - name: Generate Matrix JSON
         id: generate-matrix-json
