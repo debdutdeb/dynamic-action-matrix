@@ -13,8 +13,7 @@ jobs:
       - name: Generate Matrix JSON
         id: generate-matrix-json
         run: |
-          json=${{ toJSON([12, 14, 16]) }}
-          echo "::set-output name=matrix::$json"
+          echo "::set-output name=matrix::\"{ 'nodeVersions': [12, 14, 16] }\""
 
     outputs:
       matrix: ${{ steps.generate-matrix-json.outputs.matrix }}
@@ -27,7 +26,7 @@ jobs:
       - GenerateMatrix
     steps:
       - run: |
-          echo "Matrix: ${{ toJSON(needs.GenerateMatrix.outputs) }}"
+          echo "Matrix: ${{ toJSON(needs.GenerateMatrix.outputs.matrix) }}"
 
 
   UseMatrix:
