@@ -1,0 +1,14 @@
+name: Show runner resource
+
+on:
+  push:
+
+
+
+jobs:
+  Show:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          free -ht
+          cat /proc/cpuinfo
