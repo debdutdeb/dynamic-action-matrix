@@ -13,9 +13,11 @@ jobs:
       - name: Generate Matrix JSON
         id: generate-matrix-json
         run: |
-          echo "::set-output name=matrix::\"{ 'nodeVersions': [12, 14, 16] }\""
+          # in JSON
+          echo "::set-output name=matrix::[12, 14, 16]"
 
     outputs:
+      # in JSON
       matrix: ${{ steps.generate-matrix-json.outputs.matrix }}
 
 
@@ -26,25 +28,22 @@ jobs:
       - GenerateMatrix
     steps:
       - run: |
-          echo "Matrix: ${{ toJSON(needs.GenerateMatrix.outputs.matrix) }}"
+          echo "ShowMatrix: ${{ toJSON(needs.GenerateMatrix.outputs) }}"
 
 
   UseMatrix:
     needs:
       - GenerateMatrix
-    # strategy:
-    #   matrix:
-    #     nodeVersion: ${{ fromJSON(needs.GenerateMatrix.outputs.matrix).nodeVersions }}
+    strategy:
+      matrix:
+        nodeVersion: ${{ fromJSON(needs.GenerateMatrix.outputs.matrix) }}
     runs-on: ubuntu-latest
     steps:
-      - name: Print node versions
-        run: |
-          echo ${{ fromJSON(needs.GenerateMatrix.outputs.matrix) }}
-    #   - name: Setup Node
-    #     uses: actions/setup-node@v3
-    #     with:
-    #       node-version: ${{ matrix.nodeVersion }}
-    #
-    #   - name: Show Node Version
-    #     run: node -v
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.nodeVersion }}
+
+      - name: Show Node Version
+        run: node -v
 
