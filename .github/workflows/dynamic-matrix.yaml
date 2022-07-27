@@ -32,16 +32,19 @@ jobs:
   UseMatrix:
     needs:
       - GenerateMatrix
-    strategy:
-      matrix:
-        nodeVersion: ${{ fromJSON(needs.GenerateMatrix.outputs.matrix).nodeVersions }}
+    # strategy:
+    #   matrix:
+    #     nodeVersion: ${{ fromJSON(needs.GenerateMatrix.outputs.matrix).nodeVersions }}
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.nodeVersion }}
-
-      - name: Show Node Version
-        run: node -v
+      - name: Print node versions
+        run: |
+          echo ${{ fromJSON(needs.GenerateMatrix.outputs.matrix).nodeVersions }}
+    #   - name: Setup Node
+    #     uses: actions/setup-node@v3
+    #     with:
+    #       node-version: ${{ matrix.nodeVersion }}
+    #
+    #   - name: Show Node Version
+    #     run: node -v
 
