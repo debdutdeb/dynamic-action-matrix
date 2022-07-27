@@ -1,0 +1,55 @@
+name: Generate Dynamic Matrix
+
+on:
+  push:
+    branches:
+      - main
+
+
+jobs:
+  GenerateMatrixForMongoDbVersions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup jq
+        run: |
+          apt update && \
+            apt install jq curl -y
+
+      - name: Generate Matrix JSON
+        id: generate-matrix-json
+        run: |
+          mongo_versions=$(curl -s https://releases.rocket.chat/latest/info | jq -c .compatibleMongoVersions)
+          echo "MONGO_VERSIONS: $mongo_versions"
+          echo "::set-output name=matrix::$mongo_versions"
+
+    outputs:
+      mongo: ${{ steps.generate-matrix-json.outputs.matrix }}
+
+
+
+  ShowMatrix:
+    runs-on: ubuntu-latest
+    needs:
+      - GenerateMatrixForMongoDbVersions
+    steps:
+      - run: |
+          echo "ShowMatrix: ${{ toJSON(needs.GenerateMatrixForMongoDbVersions.outputs) }}"
+
+
+  UseMatrix:
+    needs:
+      - GenerateMatrixForMongoDbVersions
+    strategy:
+      matrix:
+        MongoVersion: ${{ fromJSON(needs.GenerateMatrixForMongoDbVersions.outputs.mongo) }}
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Show mongo version
+        run: echo ${{ matrix.MongoVersion }}
+
+      - name: Use mongodb
+        uses: supercharge/mongodb-github-action@1.7.0
+        with:
+          mongodb-version: ${{ matrix.MongoVersion }}
+
