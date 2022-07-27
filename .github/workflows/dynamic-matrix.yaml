@@ -39,7 +39,7 @@ jobs:
     steps:
       - name: Print node versions
         run: |
-          echo ${{ fromJSON(needs.GenerateMatrix.outputs.matrix) }}
+          echo ${{ fromJSON(needs.GenerateMatrix.outputs.matrix.nodeVersions) }}
     #   - name: Setup Node
     #     uses: actions/setup-node@v3
     #     with:
